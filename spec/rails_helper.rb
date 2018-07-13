@@ -61,6 +61,8 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
   config.include JsonHelper
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include DeviseHelper
 end
 
 Shoulda::Matchers.configure do |config|
