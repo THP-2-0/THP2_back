@@ -25,12 +25,16 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'pry-byebug'
   gem 'rspec-rails'
-  gem 'rubocop'
 end
 
 group :development do
-  gem 'annotate'
+  gem 'annotate', require: false
+  gem 'guard', require: false
+  gem 'guard-annotate', require: false
+  gem 'guard-rspec', require: false
+  gem 'guard-rubocop', require: false
   gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'rubocop', require: false
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
