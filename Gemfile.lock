@@ -83,6 +83,9 @@ GEM
       pry (>= 0.9.12)
       shellany (~> 0.0)
       thor (>= 0.18.1)
+    guard-annotate (2.3)
+      annotate (~> 2.4, >= 2.4.0)
+      guard-compat (~> 1.2, >= 1.2.1)
     guard-compat (1.2.1)
     guard-rspec (4.7.3)
       guard (~> 2.1)
@@ -226,6 +229,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   guard
+  guard-annotate
   guard-rspec
   listen (>= 3.0.5, < 3.2)
   pg (>= 0.18, < 2.0)
