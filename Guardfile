@@ -82,9 +82,14 @@ guard 'annotate', routes: 'after', serializers: false, factories: false, show_in
 
   # Uncomment the following line if you also want to run annotate anytime
   # a model file changes
-  watch( 'app/models/**/*.rb' )
+  # watch( 'app/models/**/*.rb' )
 
   # Uncomment the following line if you are running routes annotation
   # with the ":routes => true" option
   watch( 'config/routes.rb' )
+end
+
+guard :rubocop do
+  watch(/.+\.rb$/)
+  watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
 end
