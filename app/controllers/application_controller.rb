@@ -5,6 +5,12 @@ class ApplicationController < ActionController::API
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
   rescue_from ActiveRecord::RecordInvalid, with: :rescue_bad_params
 
+  before_action :fail
+
+  def fail
+    raise "IT FAILS AS EXPECTED"
+  end
+
   def record_not_found(exception)
     render json: { errors: [exception.message] }, status: :not_found
   end
