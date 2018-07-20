@@ -10,4 +10,6 @@ Devise.setup do |config|
   # See: http://stackoverflow.com/q/19600905/806956
   config.navigational_formats = [:json]
   config.authentication_keys = [:login]
+
+  config.secret_key = ENV.fetch('SECRET_KEY_BASE', 'asdfgh')
 end
