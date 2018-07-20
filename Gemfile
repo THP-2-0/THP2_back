@@ -18,6 +18,8 @@ gem 'bootsnap', '>= 1.1.0', require: false
 # Extracting JSON serialialization in its own class
 gem 'active_model_serializers', '~> 0.10.0'
 
+# Auth with tokens for an API
+gem 'devise_token_auth', '~> 0.1', github: 'denispasin/devise_token_auth'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
@@ -26,6 +28,7 @@ group :production do
 end
 
 group :development, :test do
+  gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'pry-byebug'
   gem 'rspec-rails'

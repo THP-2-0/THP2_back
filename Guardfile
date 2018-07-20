@@ -77,7 +77,7 @@ guard :rspec, cmd: "bundle exec rspec" do
   end
 end
 
-guard 'annotate', routes: 'after', serializers: false, factories: false, show_indexes: true do
+guard 'annotate', routes: 'after', serializers: false, factories: false do
   watch( 'db/schema.rb' )
 
   # Uncomment the following line if you also want to run annotate anytime
