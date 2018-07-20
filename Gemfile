@@ -23,6 +23,8 @@ gem 'devise_token_auth', '~> 0.1', github: 'denispasin/devise_token_auth'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
+gem "pundit"
+
 group :production do
   gem 'sentry-raven'
 end

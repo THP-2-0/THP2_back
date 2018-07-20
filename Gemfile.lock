@@ -160,6 +160,8 @@ GEM
       byebug (~> 10.0)
       pry (~> 0.10)
     puma (3.11.4)
+    pundit (1.1.0)
+      activesupport (>= 3.0.0)
     rack (2.0.5)
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
@@ -278,6 +280,7 @@ DEPENDENCIES
   pg (>= 0.18, < 2.0)
   pry-byebug
   puma (~> 3.11)
+  pundit
   rails (~> 5.2.0)
   rspec-rails
   rubocop
