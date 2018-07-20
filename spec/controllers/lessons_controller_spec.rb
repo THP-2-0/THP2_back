@@ -75,8 +75,9 @@ RSpec.describe LessonsController, type: :controller do
 
   describe "#delete" do
     subject { delete(:destroy, params: { id: id }) }
-    let!(:lesson) { create(:lesson) }
+    let!(:lesson) { create(:lesson, creator: creator) }
     let(:id) { lesson.id }
+    let(:creator) { test_user }
 
     it "fails with a 401" do
       subject
@@ -98,13 +99,23 @@ RSpec.describe LessonsController, type: :controller do
       end
 
       context "the id exists" do
-        it "returns a 204" do
-          subject
-          expect(response).to be_no_content
-        end
+        context "the user is not the creator" do
+          let(:creator) { create(:user) }
 
-        it "destroys the lesson" do
-          expect{ subject }.to change(Lesson, :count).by(-1)
+          it "returns an unauthorized" do
+            subject
+            expect(response).to be_unauthorized
+          end
+        end
+        context "the user is the creator" do
+          it "returns a 204" do
+            subject
+            expect(response).to be_no_content
+          end
+
+          it "destroys the lesson" do
+            expect{ subject }.to change(Lesson, :count).by(-1)
+          end
         end
       end
     end
@@ -218,10 +229,11 @@ RSpec.describe LessonsController, type: :controller do
         description: description
       }
     end
-    let!(:lesson) { create(:lesson) }
+    let!(:lesson) { create(:lesson, creator: creator) }
     let(:title) { Faker::Lorem.word }
     let(:description) { Faker::StarWars.quote.first(300) }
     let(:id) { lesson.id }
+    let(:creator) { test_user }
 
     it "fails with a 401" do
       subject
@@ -231,6 +243,15 @@ RSpec.describe LessonsController, type: :controller do
     context "the user is logged" do
       before do
         auth_me_please
+      end
+
+      context "the user isn't the creator" do
+        let(:creator) { create(:user) }
+
+        it "returns unauthorized" do
+          subject
+          expect(response).to be_unauthorized
+        end
       end
 
       it "returns a 200" do
