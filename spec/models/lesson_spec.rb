@@ -9,6 +9,7 @@
 #  description :text
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  creator_id  :uuid
 #
 
 RSpec.describe Lesson, type: :model do
@@ -16,6 +17,11 @@ RSpec.describe Lesson, type: :model do
     lesson = create(:lesson)
     expect(lesson.title).not_to be_blank
     expect(lesson.description).not_to be_blank
+  end
+
+  it "follows creator link" do
+    lesson = create(:lesson).reload
+    expect(lesson.creator.lessons.first).to eq(lesson)
   end
 
   it { is_expected.to validate_presence_of(:title) }
