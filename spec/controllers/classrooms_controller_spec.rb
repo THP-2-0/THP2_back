@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
-RSpec.describe LessonsController, type: :controller do
-  let!(:classroom) { create(:classroom) }
+describe ClassroomsController do
   describe "#index" do
-    subject { get :index, params: { classroom_id: classroom.id } }
+    subject { get :index }
 
     it "fails with a 401" do
       subject
@@ -17,12 +14,12 @@ RSpec.describe LessonsController, type: :controller do
         auth_me_please
       end
 
-      let!(:lessons) { create_list(:lesson, 5) }
+      let!(:classrooms) { create_list(:classroom, 5) }
 
-      it "returns all the lessons" do
+      it "returns all the classrooms" do
         subject
         expect(json_response.size).to eq(5)
-        expect(json_response.first[:id]).to be_in(lessons.map(&:id))
+        expect(json_response.first[:id]).to be_in(classrooms.map(&:id))
       end
 
       it "returns a 200" do
@@ -33,9 +30,9 @@ RSpec.describe LessonsController, type: :controller do
   end
 
   describe "#show" do
-    subject { get(:show, params: { classroom_id: classroom.id, id: id }) }
-    let(:lesson) { create(:lesson) }
-    let(:id) { lesson.id }
+    subject { get(:show, params: { id: id }) }
+    let(:classroom) { create(:classroom) }
+    let(:id) { classroom.id }
 
     it "fails with a 401" do
       subject
@@ -62,23 +59,30 @@ RSpec.describe LessonsController, type: :controller do
           expect(response).to be_ok
         end
 
-        it "returns the lesson" do
+        it "returns the classroom" do
           subject
-          expect(json_response[:id]).to eq(lesson.id)
-          expect(json_response[:title]).to eq(lesson.title)
-          expect(json_response[:description]).to eq(lesson.description)
-          expect(json_response["created_at"]).to eq(lesson.created_at.as_json)
-          expect(json_response["creator_id"]).to eq(lesson.creator_id)
-          expect(json_response["classroom_id"]).to eq(lesson.classroom_id)
+          expect(json_response[:id]).to eq(classroom.id)
+          expect(json_response[:title]).to eq(classroom.title)
+          expect(json_response[:description]).to eq(classroom.description)
+          expect(json_response["created_at"]).to eq(classroom.created_at.as_json)
+          expect(json_response["creator_id"]).to eq(classroom.creator_id)
+        end
+
+        context "the classroom has lessons" do
+          let(:classroom) { create(:classroom, :with_lessons) }
+          it "returns the lesson ids" do
+            subject
+            expect(json_response["lessons"]).to eq(classroom.lessons.sort_by(&:created_at).map(&:id))
+          end
         end
       end
     end
   end
 
   describe "#delete" do
-    subject { delete(:destroy, params: { classroom_id: id, id: id }) }
-    let!(:lesson) { create(:lesson, creator: creator) }
-    let(:id) { lesson.id }
+    subject { delete(:destroy, params: { id: id }) }
+    let!(:classroom) { create(:classroom, creator: creator) }
+    let(:id) { classroom.id }
     let(:creator) { test_user }
 
     it "fails with a 401" do
@@ -115,8 +119,8 @@ RSpec.describe LessonsController, type: :controller do
             expect(response).to be_no_content
           end
 
-          it "destroys the lesson" do
-            expect{ subject }.to change(Lesson, :count).by(-1)
+          it "destroys the classroom" do
+            expect{ subject }.to change(Classroom, :count).by(-1)
           end
         end
       end
@@ -124,7 +128,7 @@ RSpec.describe LessonsController, type: :controller do
   end
 
   describe "#create" do
-    subject { post(:create, params: { classroom_id: classroom.id, lesson: params }) }
+    subject { post(:create, params: { classroom: params }) }
     let(:params) do
       {
         title: title,
@@ -149,13 +153,13 @@ RSpec.describe LessonsController, type: :controller do
         expect(response).to be_created
       end
 
-      it "returns the new lesson" do
+      it "returns the new classroom" do
         subject
         expect(json_response[:id]).not_to be_blank
       end
 
-      it "creates the lesson" do
-        expect{ subject }.to change(Lesson, :count).by(1)
+      it "creates the classroom" do
+        expect{ subject }.to change(Classroom, :count).by(1)
       end
 
       it "sets the creator to current_user" do
@@ -163,8 +167,8 @@ RSpec.describe LessonsController, type: :controller do
         expect(json_response[:creator_id]).to eq(test_user.id)
       end
 
-      context "lesson is missing from params" do
-        subject { post(:create, params: { classroom_id: classroom.id }) }
+      context "classroom is missing from params" do
+        subject { post(:create, params: {}) }
 
         it "returns a 403" do
           subject
@@ -173,21 +177,7 @@ RSpec.describe LessonsController, type: :controller do
 
         it "returns a readable error" do
           subject
-          expect(json_response[:errors].first).to include("lesson")
-        end
-      end
-
-      context "the classroom doesn't exist" do
-        subject { post(:create, params: { classroom_id: "1pl4y-pok3m0n-g0-3v3ryd4y", lesson: params }) }
-
-        it "returns a 404" do
-          subject
-          expect(response).to be_not_found
-        end
-
-        it "returns a readable error" do
-          subject
-          expect(json_response[:errors].first).to include("Classroom")
+          expect(json_response[:errors].first).to include("classroom")
         end
       end
 
@@ -238,17 +228,17 @@ RSpec.describe LessonsController, type: :controller do
   end
 
   describe "#update" do
-    subject { patch(:update, params: { classroom_id: classroom.id, id: id, lesson: params }) }
+    subject { patch(:update, params: { id: id, classroom: params }) }
     let(:params) do
       {
         title: title,
         description: description
       }
     end
-    let!(:lesson) { create(:lesson, creator: creator) }
+    let!(:classroom) { create(:classroom, creator: creator) }
     let(:title) { Faker::Lorem.word }
     let(:description) { Faker::StarWars.quote.first(300) }
-    let(:id) { lesson.id }
+    let(:id) { classroom.id }
     let(:creator) { test_user }
 
     it "fails with a 401" do
@@ -275,15 +265,15 @@ RSpec.describe LessonsController, type: :controller do
         expect(response).to be_ok
       end
 
-      it "returns the updated lesson" do
+      it "returns the updated classroom" do
         subject
         expect(json_response[:title]).to eq title
         expect(json_response[:description]).to eq description
       end
 
-      it "updates the lesson" do
-        expect{ subject }.to change{ lesson.reload.title }.to(title).and(
-          change{ lesson.reload.description }.to(description)
+      it "updates the classroom" do
+        expect{ subject }.to change{ classroom.reload.title }.to(title).and(
+          change{ classroom.reload.description }.to(description)
         )
       end
 
@@ -296,8 +286,8 @@ RSpec.describe LessonsController, type: :controller do
         end
       end
 
-      context "lesson is missing from params" do
-        subject { patch(:update, params: { id: id, classroom_id: classroom.id }) }
+      context "classroom is missing from params" do
+        subject { patch(:update, params: { id: id }) }
 
         it "returns a 403" do
           subject
@@ -306,7 +296,7 @@ RSpec.describe LessonsController, type: :controller do
 
         it "returns a readable error" do
           subject
-          expect(json_response[:errors].first).to include("lesson")
+          expect(json_response[:errors].first).to include("classroom")
         end
       end
 
