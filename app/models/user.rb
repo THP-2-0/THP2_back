@@ -36,6 +36,7 @@ class User < ApplicationRecord
   include DeviseTokenAuth::Concerns::User
 
   has_many :lessons, foreign_key: 'creator_id', inverse_of: 'creator', dependent: :destroy
+  has_many :classrooms, foreign_key: 'creator_id', inverse_of: 'creator', dependent: :destroy
 
   validates :username, presence: true, uniqueness: { case_sensitive: false }
 

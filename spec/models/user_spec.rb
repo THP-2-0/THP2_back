@@ -42,9 +42,13 @@ describe User do
   end
 
   it "follows lessons link" do
-    create(:user, :with_lessons)
-    user = User.first
+    user = create(:user, :with_lessons).reload
     expect(user.lessons.first.creator).to eq(user)
+  end
+
+  it "follows classrooms link" do
+    user = create(:user, :with_classrooms).reload
+    expect(user.classrooms.first.creator).to eq(user)
   end
 
   it "cascade destroys its lessons" do

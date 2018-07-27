@@ -2,7 +2,9 @@
 
 Rails.application.routes.draw do
   mount_devise_token_auth_for 'User', at: 'auth'
-  resources :lessons, except: %i[new edit]
+  resources :classrooms, except: %i[new edit] do
+    resources :lessons, except: %i[new edit]
+  end
 end
 
 # == Route Map
@@ -28,12 +30,18 @@ end
 #                           POST   /auth/confirmation(.:format)                                                             devise_token_auth/confirmations#create
 #       auth_validate_token POST   /auth/validate_token(.:format)                                                           devise_token_auth/token_validations#validate_token
 #        auth_password_edit POST   /auth/password/edit(.:format)                                                            devise_token_auth/passwords#edit
-#                   lessons GET    /lessons(.:format)                                                                       lessons#index
-#                           POST   /lessons(.:format)                                                                       lessons#create
-#                    lesson GET    /lessons/:id(.:format)                                                                   lessons#show
-#                           PATCH  /lessons/:id(.:format)                                                                   lessons#update
-#                           PUT    /lessons/:id(.:format)                                                                   lessons#update
-#                           DELETE /lessons/:id(.:format)                                                                   lessons#destroy
+#         classroom_lessons GET    /classrooms/:classroom_id/lessons(.:format)                                              lessons#index
+#                           POST   /classrooms/:classroom_id/lessons(.:format)                                              lessons#create
+#          classroom_lesson GET    /classrooms/:classroom_id/lessons/:id(.:format)                                          lessons#show
+#                           PATCH  /classrooms/:classroom_id/lessons/:id(.:format)                                          lessons#update
+#                           PUT    /classrooms/:classroom_id/lessons/:id(.:format)                                          lessons#update
+#                           DELETE /classrooms/:classroom_id/lessons/:id(.:format)                                          lessons#destroy
+#                classrooms GET    /classrooms(.:format)                                                                    classrooms#index
+#                           POST   /classrooms(.:format)                                                                    classrooms#create
+#                 classroom GET    /classrooms/:id(.:format)                                                                classrooms#show
+#                           PATCH  /classrooms/:id(.:format)                                                                classrooms#update
+#                           PUT    /classrooms/:id(.:format)                                                                classrooms#update
+#                           DELETE /classrooms/:id(.:format)                                                                classrooms#destroy
 #        rails_service_blob GET    /rails/active_storage/blobs/:signed_id/*filename(.:format)                               active_storage/blobs#show
 # rails_blob_representation GET    /rails/active_storage/representations/:signed_blob_id/:variation_key/*filename(.:format) active_storage/representations#show
 #        rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                              active_storage/disk#show
