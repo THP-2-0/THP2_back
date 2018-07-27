@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe LessonsController, type: :controller do
-  let!(:classroom) { create(:classroom) }
+  let!(:classroom) { create(:classroom, creator: test_user) }
   describe "#index" do
     subject { get :index, params: { classroom_id: classroom.id } }
 
@@ -142,6 +142,15 @@ RSpec.describe LessonsController, type: :controller do
     context "the user is logged" do
       before do
         auth_me_please
+      end
+
+      context "the classroom is not his" do
+        let(:classroom) { create(:classroom) }
+
+        it 'returns a 401' do
+          subject
+          expect(response).to be_unauthorized
+        end
       end
 
       it "returns a 201" do

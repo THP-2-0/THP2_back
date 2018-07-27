@@ -8,6 +8,7 @@ class LessonsController < ApplicationController
   end
 
   def create
+    authorize(current_classroom, :create_lesson?)
     new_lesson = Lesson.create!(create_params.merge(creator: current_user, classroom: current_classroom))
     render json: new_lesson, status: :created
   end
