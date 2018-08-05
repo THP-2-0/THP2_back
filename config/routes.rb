@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   resources :classrooms, except: %i[new edit] do
     resources :lessons, except: %i[new edit]
   end
+  match '*path', via: :all, to: "application#no_route"
+  match '/', via: :all, to: "application#no_route"
 end
 
 # == Route Map

@@ -81,5 +81,3 @@ test:
 production:
   <<: *default
   database: THP2_back_production
-  username: THP2_back
-  password: <%= ENV['THP2_BACK_DATABASE_PASSWORD'] %>
