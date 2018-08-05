@@ -1,5 +1,9 @@
 FROM ruby:2.5.1
 
+RUN apt-get update && apt-get install -y \
+      postgresql-client \
+      && rm -rf /var/lib/apt/lists/*
+
 RUN mkdir /app
 WORKDIR /app
 
@@ -26,7 +30,8 @@ COPY ./.rspec /app/.rspec
 COPY ./.rubocop.yml /app/.rubocop.yml
 
 COPY ./files_docker/entrypoint.sh /start.sh
-RUN chmod +x /start.sh
+COPY ./files_docker/wait_for_postgres.sh /wait_for_postgres.sh
+RUN chmod +x /wait_for_postgres.sh && chmod +x /start.sh
 
 ENTRYPOINT [ "/start.sh" ]
 CMD rails s
