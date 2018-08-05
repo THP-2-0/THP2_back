@@ -1,0 +1,31 @@
+version: '3'
+services:
+  postgres:
+    image: 'postgres:9.6'
+    environment:
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=app
+  app:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - 3001:3000
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    environment:
+      - DB_USERNAME=app
+      - DB_PASSWORD=app
+      - DB_HOST=postgres
+  app_prod:
+    build: .
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    environment:
+      - DB_USERNAME=app
+      - DB_PASSWORD=app
+      - DB_HOST=postgres

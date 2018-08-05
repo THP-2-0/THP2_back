@@ -27,6 +27,10 @@ class ApplicationController < ActionController::API
     head :unauthorized
   end
 
+  def no_route
+    head :not_found
+  end
+
   protected
 
   def configure_permitted_parameters
