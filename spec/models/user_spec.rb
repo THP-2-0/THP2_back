@@ -42,8 +42,8 @@ describe User do
   end
 
   it "follows lessons link" do
-    user = create(:user, :with_lessons).reload
-    expect(user.lessons.first.creator).to eq(user)
+    user = create(:user, :with_created_lessons).reload
+    expect(user.created_lessons.first.creator).to eq(user)
   end
 
   it "follows classrooms link" do
@@ -51,8 +51,23 @@ describe User do
     expect(user.classrooms.first.creator).to eq(user)
   end
 
+  it "follows the sent_invitations link" do
+    user = create(:user, :with_sent_invitations).reload
+    expect(user.sent_invitations.first.teacher).to eq(user)
+  end
+
+  it "follows the received_invitations link" do
+    user = create(:user, :with_received_invitations).reload
+    expect(user.received_invitations.first.student).to eq(user)
+  end
+
+  it "follows the joined_lessons link" do
+    user = create(:user, :with_joined_lessons).reload
+    expect(user.joined_lessons.first.students.first).to eq(user)
+  end
+
   it "cascade destroys its lessons" do
-    user = create(:user, :with_lessons)
+    user = create(:user, :with_created_lessons)
     expect{ user.destroy }.to change(Lesson, :count).to(0)
   end
 

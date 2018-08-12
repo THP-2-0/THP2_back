@@ -20,5 +20,16 @@ FactoryBot.define do
 
     title { Faker::Lovecraft.tome.first(50) }
     description { Faker::Matz.quote.first(300) }
+    trait(:with_invitations) do
+      after(:create) do |lesson|
+        create_list(:invitation, Random.rand(1..4), teacher: lesson.creator, lesson: lesson)
+      end
+    end
+
+    trait(:with_students) do
+      after(:create) do |lesson|
+        create_list(:invitation, Random.rand(1..4), teacher: lesson.creator, lesson: lesson, accepted: true)
+      end
+    end
   end
 end
