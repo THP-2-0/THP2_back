@@ -19,6 +19,7 @@ class Lesson < ApplicationRecord
   validates :classroom, presence: true
 
   belongs_to :creator, class_name: 'User', inverse_of: 'created_lessons'
+  belongs_to :teacher, class_name: 'User', inverse_of: 'created_lessons', foreign_key: 'creator_id'
   belongs_to :classroom
 
   has_many :invitations, dependent: :destroy

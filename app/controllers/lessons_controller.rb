@@ -4,12 +4,12 @@ class LessonsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    render json: Lesson.order(:created_at)
+    render json: Lesson.where(classroom: current_classroom).order(:created_at)
   end
 
   def create
     authorize(current_classroom, :create_lesson?)
-    new_lesson = Lesson.create!(create_params.merge(creator: current_user, classroom: current_classroom))
+    new_lesson = Lesson.create!(create_params.merge(creator: current_user, teacher: current_user, classroom: current_classroom))
     render json: new_lesson, status: :created
   end
 
@@ -36,7 +36,7 @@ class LessonsController < ApplicationController
   end
 
   def current_lesson
-    @current_lesson ||= Lesson.find(params[:id])
+    @current_lesson ||= Lesson.where(classroom_id: params[:classroom_id]).find(params[:id])
   end
 
   def create_params
