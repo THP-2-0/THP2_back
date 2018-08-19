@@ -36,4 +36,14 @@ class ApplicationController < ActionController::API
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username email])
   end
+
+  private
+
+  def current_classroom
+    @current_classroom ||= Classroom.find(params[:classroom_id])
+  end
+
+  def current_lesson
+    @current_lesson ||= Lesson.where(classroom_id: params[:classroom_id]).find(params[:lesson_id])
+  end
 end

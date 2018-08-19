@@ -31,10 +31,6 @@ class LessonsController < ApplicationController
 
   private
 
-  def current_classroom
-    @current_classroom ||= Classroom.find(params[:classroom_id])
-  end
-
   def current_lesson
     @current_lesson ||= Lesson.where(classroom_id: params[:classroom_id]).find(params[:id])
   end
