@@ -1,23 +1,39 @@
 # frozen_string_literal: true
 
 describe InvitationsController do
-  let!(:classroom) { create(:classroom) }
-  let(:lesson) { create(:lesson, classroom: classroom, teacher: teacher) }
-  let(:teacher) { create(:user) }
+  define_context "inexistant invitation" do
+    context "if the invitation doesn't exist" do
+      let(:invitation_id) { Faker::Lorem.word }
 
-  describe '#index' do
-    subject { get :index, params: { classroom_id: classroom.id, lesson_id: lesson.id } }
+      it 'returns a 404' do
+        subject
+        expect(response).to be_not_found
+      end
+    end
+  end
 
-    it 'fails wit a 401' do
+  define_context "need to be" do |type|
+    it "fails if the user isn't the #{type}" do
       subject
       expect(response).to be_unauthorized
     end
 
-    context 'with a logged the user' do
-      before do
-        auth_me_please
-      end
+    context "that is the #{type}" do
+      let(type) { test_user }
 
+      execute_tests
+    end
+  end
+
+  let!(:classroom) { create(:classroom) }
+  let(:lesson) { create(:lesson, classroom: classroom, teacher: teacher) }
+  let(:teacher) { create(:user) }
+  let(:student) { create(:user) }
+
+  describe '#index' do
+    subject { get :index, params: { classroom_id: classroom.id, lesson_id: lesson.id } }
+
+    in_context(:authenticated) do
       let!(:invitations) { create_list(:invitation, 5, lesson: lesson) }
       let!(:other_invitation) { create(:invitation) }
 
@@ -35,18 +51,11 @@ describe InvitationsController do
   end
 
   describe '#show' do
-    subject { get :show, params: { lesson_id: lesson.id, classroom_id: classroom.id, id: id } }
+    subject { get :show, params: { lesson_id: lesson.id, classroom_id: classroom.id, id: invitation_id } }
     let!(:invitation) { create(:invitation, lesson: lesson) }
-    let(:id) { invitation.id }
+    let(:invitation_id) { invitation.id }
 
-    it 'fails without auth' do
-      subject
-      expect(response).to be_unauthorized
-    end
-
-    context 'with auth user' do
-      before { auth_me_please }
-
+    in_context(:authenticated) do
       it 'returns a 200' do
         subject
         expect(response).to be_ok
@@ -59,14 +68,7 @@ describe InvitationsController do
         end
       end
 
-      context "if the id doesn't exist" do
-        let(:id) { Faker::Lorem.word }
-
-        it 'returns a 404' do
-          subject
-          expect(response).to be_not_found
-        end
-      end
+      in_context "inexistant invitation"
     end
   end
 
@@ -76,22 +78,8 @@ describe InvitationsController do
     let(:student) { create(:user) }
     let(:student_id) { student.id }
 
-    it "fails without auth" do
-      subject
-      expect(response).to be_unauthorized
-    end
-
-    context "with a auth user" do
-      before { auth_me_please }
-
-      it "fails if the user isn't the teacher" do
-        subject
-        expect(response).to be_unauthorized
-      end
-
-      context 'that is the teacher' do
-        let(:teacher) { test_user }
-
+    in_context(:authenticated) do
+      in_context("need to be", :teacher) do
         context "if the student doesn't exist" do
           let(:student_id) { Faker::Lorem.word }
           it "fails with a 404" do
@@ -117,6 +105,60 @@ describe InvitationsController do
   end
 
   describe '#destroy' do
-    subject { delete :destroy, params: { classroom_id: classroom.id, lesson_id: lesson.id, id: invitation.id } }
+    subject { delete :destroy, params: { classroom_id: classroom.id, lesson_id: lesson.id, id: invitation_id } }
+    let!(:invitation) { create(:invitation, lesson: lesson, teacher: teacher) }
+    let(:invitation_id) { invitation.id }
+
+    in_context :authenticated do
+      in_context "inexistant invitation"
+
+      in_context "need to be", :teacher do
+        it "removes the invitation" do
+          expect{ subject }.to change(Invitation, :count).by(-1)
+        end
+
+        it "answers with head 204" do
+          subject
+          expect(response).to be_no_content
+        end
+      end
+    end
+  end
+
+  describe "#update" do
+    subject { patch :update, params: { classroom_id: classroom.id, lesson_id: lesson.id, id: invitation_id }.merge(invitation: params) }
+    let!(:invitation) { create(:invitation, lesson: lesson, student: student) }
+    let(:invitation_id) { invitation.id }
+    let(:params) { { accepted: true } }
+
+    in_context :authenticated do
+      in_context "inexistant invitation"
+      in_context "need to be", :student do
+        context "if accepted isn't present" do
+          let(:params) { {} }
+          it "fails with forbidden" do
+            subject
+            expect(response).to be_forbidden
+          end
+        end
+
+        context "if accepted is not true" do
+          let(:params) { { accepted: false } }
+          it "fails with forbidden" do
+            subject
+            expect(response).to be_forbidden
+          end
+        end
+
+        it "succeed with a 200" do
+          subject
+          expect(response).to be_ok
+        end
+
+        it "updates the invitation" do
+          expect{ subject }.to change{ invitation.reload.accepted? }.from(false).to(true)
+        end
+      end
+    end
   end
 end

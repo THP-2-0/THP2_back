@@ -11,9 +11,22 @@ class InvitationsController < ApplicationController
     render json: current_invitation
   end
 
-  def update; end
+  def update
+    authorize(current_invitation)
+    unless update_params[:accepted] == "true" || update_params[:accepted] == true
+      return render(
+        json: { errors: ["You can only accept an invitation"] },
+        status: :forbidden
+      )
+    end
+    render json: current_invitation.update(update_params)
+  end
 
-  def destroy; end
+  def destroy
+    authorize(current_invitation)
+    current_invitation.destroy
+    head :no_content
+  end
 
   def create
     authorize(current_lesson, :create_invitation?)
@@ -29,5 +42,9 @@ class InvitationsController < ApplicationController
 
   def create_params
     @create_params ||= params.require(:invitation).permit(:student_id)
+  end
+
+  def update_params
+    @update_params ||= params.require(:invitation).permit(:accepted)
   end
 end

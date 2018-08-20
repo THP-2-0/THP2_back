@@ -9,3 +9,16 @@ module DeviseHelper
     request.headers.merge! test_user.create_new_auth_token
   end
 end
+
+define_context "authenticated" do
+  it "fails without auth" do
+    subject
+    expect(response).to be_unauthorized
+  end
+
+  context "with a auth user" do
+    before { auth_me_please }
+
+    execute_tests
+  end
+end
