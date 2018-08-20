@@ -1,19 +1,21 @@
 # frozen_string_literal: true
 
 describe ClassroomsController do
+  define_context "inexistant classroom" do
+    context "if the id doesn't exist" do
+      let(:id) { Faker::Lorem.word }
+
+      it "returns a 404" do
+        subject
+        expect(response).to be_not_found
+      end
+    end
+  end
+
   describe "#index" do
     subject { get :index }
 
-    it "fails with a 401" do
-      subject
-      expect(response).to be_unauthorized
-    end
-
-    context "the user is logged" do
-      before do
-        auth_me_please
-      end
-
+    in_context :authenticated do
       let!(:classrooms) { create_list(:classroom, 5) }
 
       it "returns all the classrooms" do
@@ -34,24 +36,8 @@ describe ClassroomsController do
     let(:classroom) { create(:classroom) }
     let(:id) { classroom.id }
 
-    it "fails with a 401" do
-      subject
-      expect(response).to be_unauthorized
-    end
-
-    context "the user is logged" do
-      before do
-        auth_me_please
-      end
-
-      context "if the id doesn't exist" do
-        let(:id) { Faker::Lorem.word }
-
-        it "returns a 404" do
-          subject
-          expect(response).to be_not_found
-        end
-      end
+    in_context :authenticated do
+      in_context "inexistant classroom"
 
       context "if the id exists" do
         it "returns a 200" do
@@ -85,24 +71,8 @@ describe ClassroomsController do
     let(:id) { classroom.id }
     let(:creator) { test_user }
 
-    it "fails with a 401" do
-      subject
-      expect(response).to be_unauthorized
-    end
-
-    context "the user is logged" do
-      before do
-        auth_me_please
-      end
-
-      context "if the id doesn't exist" do
-        let(:id) { Faker::Lorem.word }
-
-        it "returns a 404" do
-          subject
-          expect(response).to be_not_found
-        end
-      end
+    in_context :authenticated do
+      in_context "inexistant classroom"
 
       context "the id exists" do
         context "the user is not the creator" do
@@ -138,16 +108,7 @@ describe ClassroomsController do
     let(:title) { Faker::Lorem.word }
     let(:description) { Faker::DrWho.quote.first(300) }
 
-    it "fails with a 401" do
-      subject
-      expect(response).to be_unauthorized
-    end
-
-    context "the user is logged" do
-      before do
-        auth_me_please
-      end
-
+    in_context :authenticated do
       it "returns a 201" do
         subject
         expect(response).to be_created
@@ -241,16 +202,7 @@ describe ClassroomsController do
     let(:id) { classroom.id }
     let(:creator) { test_user }
 
-    it "fails with a 401" do
-      subject
-      expect(response).to be_unauthorized
-    end
-
-    context "the user is logged" do
-      before do
-        auth_me_please
-      end
-
+    in_context :authenticated do
       context "the user isn't the creator" do
         let(:creator) { create(:user) }
 
@@ -277,14 +229,7 @@ describe ClassroomsController do
         )
       end
 
-      context "if the id doesn't exist" do
-        let(:id) { Faker::Lorem.word }
-
-        it "returns a 404" do
-          subject
-          expect(response).to be_not_found
-        end
-      end
+      in_context "inexistant classroom"
 
       context "classroom is missing from params" do
         subject { patch(:update, params: { id: id }) }

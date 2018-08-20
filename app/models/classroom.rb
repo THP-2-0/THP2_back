@@ -16,6 +16,6 @@ class Classroom < ApplicationRecord
   validates :title, presence: true, length: { maximum: 50 }
   validates :description, length: { maximum: 300 }
 
-  belongs_to :creator, class_name: 'User', inverse_of: 'lessons'
+  belongs_to :creator, class_name: 'User', inverse_of: 'classrooms'
   has_many :lessons, dependent: :destroy
 end

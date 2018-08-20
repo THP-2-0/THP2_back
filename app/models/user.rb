@@ -35,7 +35,32 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable, :confirmable
   include DeviseTokenAuth::Concerns::User
 
-  has_many :lessons, foreign_key: 'creator_id', inverse_of: 'creator', dependent: :destroy
+  has_many :created_lessons, class_name: 'Lesson', foreign_key: 'creator_id', inverse_of: 'creator', dependent: :destroy
+
+  has_many(
+    :sent_invitations,
+    class_name: 'Invitation',
+    inverse_of: 'teacher',
+    dependent: :destroy,
+    foreign_key: 'teacher_id',
+  )
+
+  has_many(
+    :received_invitations,
+    class_name: 'Invitation',
+    inverse_of: 'student',
+    dependent: :destroy,
+    foreign_key: 'student_id',
+  )
+
+  has_many(
+    :joined_lessons,
+    -> { where(invitations: { accepted: true }) },
+    through: :received_invitations,
+    inverse_of: :students,
+    source: :lesson,
+  )
+
   has_many :classrooms, foreign_key: 'creator_id', inverse_of: 'creator', dependent: :destroy
 
   validates :username, presence: true, uniqueness: { case_sensitive: false }

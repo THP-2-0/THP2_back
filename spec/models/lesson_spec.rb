@@ -22,7 +22,18 @@ RSpec.describe Lesson, type: :model do
 
   it "follows creator link" do
     lesson = create(:lesson).reload
-    expect(lesson.creator.lessons.first).to eq(lesson)
+    expect(lesson.creator.created_lessons.first).to eq(lesson)
+  end
+
+  it "follows students link with scope" do
+    lesson = create(:lesson, :with_invitations, :with_students).reload
+    expect(lesson.students.first.joined_lessons.first).to eq(lesson)
+    expect(lesson.students.size).to eq(Invitation.where(accepted: true).size)
+  end
+
+  it "follows invitations link" do
+    lesson = create(:lesson, :with_invitations).reload
+    expect(lesson.invitations.first.lesson).to eq(lesson)
   end
 
   it "follows classroom link" do

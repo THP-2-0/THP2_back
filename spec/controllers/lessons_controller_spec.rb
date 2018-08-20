@@ -7,17 +7,8 @@ RSpec.describe LessonsController, type: :controller do
   describe "#index" do
     subject { get :index, params: { classroom_id: classroom.id } }
 
-    it "fails with a 401" do
-      subject
-      expect(response).to be_unauthorized
-    end
-
-    context "the user is logged" do
-      before do
-        auth_me_please
-      end
-
-      let!(:lessons) { create_list(:lesson, 5) }
+    in_context :authenticated do
+      let!(:lessons) { create_list(:lesson, 5, classroom: classroom) }
 
       it "returns all the lessons" do
         subject
@@ -34,19 +25,10 @@ RSpec.describe LessonsController, type: :controller do
 
   describe "#show" do
     subject { get(:show, params: { classroom_id: classroom.id, id: id }) }
-    let(:lesson) { create(:lesson) }
+    let(:lesson) { create(:lesson, classroom: classroom) }
     let(:id) { lesson.id }
 
-    it "fails with a 401" do
-      subject
-      expect(response).to be_unauthorized
-    end
-
-    context "the user is logged" do
-      before do
-        auth_me_please
-      end
-
+    in_context :authenticated do
       context "if the id doesn't exist" do
         let(:id) { Faker::Lorem.word }
 
@@ -76,21 +58,12 @@ RSpec.describe LessonsController, type: :controller do
   end
 
   describe "#delete" do
-    subject { delete(:destroy, params: { classroom_id: id, id: id }) }
-    let!(:lesson) { create(:lesson, creator: creator) }
+    subject { delete(:destroy, params: { classroom_id: classroom.id, id: id }) }
+    let!(:lesson) { create(:lesson, creator: creator, classroom: classroom) }
     let(:id) { lesson.id }
     let(:creator) { test_user }
 
-    it "fails with a 401" do
-      subject
-      expect(response).to be_unauthorized
-    end
-
-    context "the user is logged" do
-      before do
-        auth_me_please
-      end
-
+    in_context :authenticated do
       context "if the id doesn't exist" do
         let(:id) { Faker::Lorem.word }
 
@@ -134,16 +107,7 @@ RSpec.describe LessonsController, type: :controller do
     let(:title) { Faker::Lorem.word }
     let(:description) { Faker::DrWho.quote.first(300) }
 
-    it "fails with a 401" do
-      subject
-      expect(response).to be_unauthorized
-    end
-
-    context "the user is logged" do
-      before do
-        auth_me_please
-      end
-
+    in_context :authenticated do
       context "the classroom is not his" do
         let(:classroom) { create(:classroom) }
 
@@ -254,22 +218,13 @@ RSpec.describe LessonsController, type: :controller do
         description: description
       }
     end
-    let!(:lesson) { create(:lesson, creator: creator) }
+    let!(:lesson) { create(:lesson, creator: creator, classroom: classroom) }
     let(:title) { Faker::Lorem.word }
     let(:description) { Faker::StarWars.quote.first(300) }
     let(:id) { lesson.id }
     let(:creator) { test_user }
 
-    it "fails with a 401" do
-      subject
-      expect(response).to be_unauthorized
-    end
-
-    context "the user is logged" do
-      before do
-        auth_me_please
-      end
-
+    in_context :authenticated do
       context "the user isn't the creator" do
         let(:creator) { create(:user) }
 

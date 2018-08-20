@@ -8,4 +8,8 @@ class LessonPolicy < ApplicationPolicy
   def destroy?
     record.creator == user
   end
+
+  def create_invitation?
+    record.teacher == user
+  end
 end

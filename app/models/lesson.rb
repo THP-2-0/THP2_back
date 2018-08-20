@@ -18,6 +18,17 @@ class Lesson < ApplicationRecord
   validates :description, length: { maximum: 300 }
   validates :classroom, presence: true
 
-  belongs_to :creator, class_name: 'User', inverse_of: 'lessons'
+  belongs_to :creator, class_name: 'User', inverse_of: 'created_lessons'
+  belongs_to :teacher, class_name: 'User', inverse_of: 'created_lessons', foreign_key: 'creator_id'
   belongs_to :classroom
+
+  has_many :invitations, dependent: :destroy
+
+  has_many(
+    :students,
+    -> { where(invitations: { accepted: true }) },
+    class_name: 'User',
+    through: :invitations,
+    inverse_of: 'joined_lessons',
+  )
 end
