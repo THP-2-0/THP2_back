@@ -10,7 +10,7 @@ module DeviseHelper
   end
 end
 
-define_context "authenticated" do
+RSpec.define_context "authenticated" do
   it "fails without auth" do
     subject
     expect(response).to be_unauthorized
