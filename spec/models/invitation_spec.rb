@@ -38,4 +38,15 @@ RSpec.describe Invitation, type: :model do
   it { is_expected.to validate_presence_of(:student) }
   it { is_expected.to validate_presence_of(:teacher) }
   it { is_expected.to validate_presence_of(:lesson) }
+
+  context "when creating an invitation" do
+    subject do
+      create(:invitation)
+    end
+
+    it "sends an email" do
+      expect(InvitationsMailer).to receive(:create).and_call_original
+      expect{ subject }.to change{ ActionMailer::Base.deliveries.count }.by(1)
+    end
+  end
 end
