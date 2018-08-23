@@ -26,6 +26,9 @@ gem 'devise_token_auth', '~> 0.1', github: 'denispasin/devise_token_auth'
 gem "pundit"
 
 group :production do
+  gem 'lograge'
+  gem "logstash-event"
+  gem 'logstash-logger'
   gem 'sentry-raven'
 end
 
