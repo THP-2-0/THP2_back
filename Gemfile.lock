@@ -128,6 +128,14 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
+    lograge (0.10.0)
+      actionpack (>= 4)
+      activesupport (>= 4)
+      railties (>= 4)
+      request_store (~> 1.0)
+    logstash-event (1.2.02)
+    logstash-logger (0.26.1)
+      logstash-event (~> 1.2)
     loofah (2.2.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -199,6 +207,8 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
+    request_store (1.4.1)
+      rack (>= 1.4)
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
@@ -302,6 +312,9 @@ DEPENDENCIES
   guard-rspec
   guard-rubocop
   listen (>= 3.0.5, < 3.2)
+  lograge
+  logstash-event
+  logstash-logger
   nyan-cat-formatter
   pg (>= 0.18, < 2.0)
   pry-byebug
