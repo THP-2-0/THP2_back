@@ -30,6 +30,7 @@ group :production do
   gem "logstash-event"
   gem 'logstash-logger'
   gem 'sentry-raven'
+  gem "skylight"
 end
 
 group :development, :test do
