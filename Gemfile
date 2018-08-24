@@ -24,6 +24,7 @@ gem 'devise_token_auth', '~> 0.1', github: 'denispasin/devise_token_auth'
 # gem 'rack-cors'
 
 gem "pundit"
+gem "sidekiq"
 
 group :production do
   gem 'lograge'
@@ -47,6 +48,7 @@ group :development do
   gem 'guard-rspec', require: false
   gem 'guard-rubocop', require: false
   gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'pry-rails'
   gem 'rubocop', require: false
   gem 'solargraph', require: false
   gem 'spring'

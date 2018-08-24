@@ -69,6 +69,7 @@ GEM
       activesupport
     coderay (1.1.2)
     concurrent-ruby (1.0.5)
+    connection_pool (2.2.2)
     crass (1.0.4)
     devise (4.4.3)
       bcrypt (~> 3.0)
@@ -172,10 +173,14 @@ GEM
     pry-byebug (3.6.0)
       byebug (~> 10.0)
       pry (~> 0.10)
+    pry-rails (0.3.6)
+      pry (>= 0.10.4)
     puma (3.11.4)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
     rack (2.0.5)
+    rack-protection (2.0.3)
+      rack
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
     rails (5.2.0)
@@ -207,6 +212,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
+    redis (4.0.2)
     request_store (1.4.1)
       rack (>= 1.4)
     responders (2.4.0)
@@ -255,6 +261,10 @@ GEM
     shellany (0.0.1)
     shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
+    sidekiq (5.2.1)
+      connection_pool (~> 2.2, >= 2.2.2)
+      rack-protection (>= 1.5.0)
+      redis (>= 3.3.5, < 5)
     simplecov (0.16.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
@@ -322,6 +332,7 @@ DEPENDENCIES
   nyan-cat-formatter
   pg (>= 0.18, < 2.0)
   pry-byebug
+  pry-rails
   puma (~> 3.11)
   pundit
   rails (~> 5.2.0)
@@ -331,6 +342,7 @@ DEPENDENCIES
   rubocop
   sentry-raven
   shoulda-matchers (~> 3.1)
+  sidekiq
   simplecov
   skylight
   solargraph
