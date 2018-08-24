@@ -37,5 +37,9 @@ module THP2Back
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid
     end
+
+    config.active_job.queue_adapter = :sidekiq
+    # TODO TEST ME
+    # config.active_job.queue_name_prefix = "THP2_back_#{Rails.env}"
   end
 end

@@ -24,6 +24,6 @@ class Invitation < ApplicationRecord
   validates :lesson, presence: true
 
   def send_email_notification
-    InvitationsMailer.create(self).deliver_now
+    InvitationsMailer.create(self).deliver_later
   end
 end

@@ -46,7 +46,7 @@ RSpec.describe Invitation, type: :model do
 
     it "sends an email" do
       expect(InvitationsMailer).to receive(:create).and_call_original
-      expect{ subject }.to change{ ActionMailer::Base.deliveries.count }.by(1)
+      expect{ subject }.to have_enqueued_job(ActionMailer::DeliveryJob)
     end
   end
 end
