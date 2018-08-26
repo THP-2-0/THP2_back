@@ -34,4 +34,4 @@ COPY ./files_docker/wait_for_postgres.sh /wait_for_postgres.sh
 RUN chmod +x /wait_for_postgres.sh && chmod +x /start.sh
 
 ENTRYPOINT [ "/start.sh" ]
-CMD rails s
+CMD rm -rf ./tmp/pids && rails s

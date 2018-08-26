@@ -1,10 +1,12 @@
 version: '3'
 services:
   postgres:
-    image: 'postgres:9.6'
+    image: 'postgres:10'
     environment:
       - POSTGRES_USER=app
       - POSTGRES_PASSWORD=app
+  redis:
+    image: 'redis'
   app:
     build:
       context: ./
@@ -13,19 +15,49 @@ services:
       - 3001:3000
     depends_on:
       - postgres
+      - redis
     volumes:
       - .:/app
     environment:
       - DB_USERNAME=app
       - DB_PASSWORD=app
       - DB_HOST=postgres
-  app_prod:
-    build: .
-    ports:
-      - 3000:3000
+      - REDIS_URL=redis://redis
+  workers:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
     depends_on:
       - postgres
+      - redis
+    volumes:
+      - .:/app
     environment:
       - DB_USERNAME=app
       - DB_PASSWORD=app
       - DB_HOST=postgres
+      - REDIS_URL=redis://redis
+    command: ["bundle", "exec", "sidekiq", "-q", "mailers", "-q", "default"]
+  app_prod:
+    build: .
+    ports:
+      - 3001:3000
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - DB_USERNAME=app
+      - DB_PASSWORD=app
+      - DB_HOST=postgres
+      - REDIS_URL=redis://redis
+  workers_prod:
+    build: .
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - DB_USERNAME=app
+      - DB_PASSWORD=app
+      - DB_HOST=postgres
+      - REDIS_URL=redis://redis
+    command: ["bundle", "exec", "sidekiq", "-q", "mailers", "-q", "default"]
