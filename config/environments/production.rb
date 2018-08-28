@@ -106,4 +106,6 @@ Rails.application.configure do
   Raven.configure do |config|
     config.current_environment = ENV.fetch('SENTRY_ENV', 'production')
   end
+
+  config.middleware.use Rack::Attack
 end

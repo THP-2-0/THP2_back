@@ -30,6 +30,7 @@ group :production do
   gem 'lograge'
   gem "logstash-event"
   gem 'logstash-logger'
+  gem 'rack-attack'
   gem 'sentry-raven'
   gem "skylight"
 end
