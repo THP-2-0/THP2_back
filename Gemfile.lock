@@ -185,6 +185,7 @@ GEM
       rack
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
+    rack-timeout (0.5.1)
     rails (5.2.0)
       actioncable (= 5.2.0)
       actionmailer (= 5.2.0)
@@ -338,6 +339,7 @@ DEPENDENCIES
   puma (~> 3.11)
   pundit
   rack-attack
+  rack-timeout
   rails (~> 5.2.0)
   rspec-rails
   rspec_in_context
