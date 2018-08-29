@@ -4,7 +4,8 @@ class LessonsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    render json: Lesson.where(classroom: current_classroom).order(:created_at)
+    lessons = FetchLessons.call!(classroom: current_classroom, page_params: page_params).lessons
+    render json: lessons, meta: pagination_dict(lessons)
   end
 
   def create

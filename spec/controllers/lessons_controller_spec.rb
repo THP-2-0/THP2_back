@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe LessonsController, type: :controller do
   let!(:classroom) { create(:classroom, creator: test_user) }
+
   describe "#index" do
     subject { get :index, params: { classroom_id: classroom.id } }
 
@@ -25,11 +26,12 @@ RSpec.describe LessonsController, type: :controller do
 
   describe "#show" do
     subject { get(:show, params: { classroom_id: classroom.id, id: id }) }
+
     let(:lesson) { create(:lesson, classroom: classroom) }
     let(:id) { lesson.id }
 
     in_context :authenticated do
-      context "if the id doesn't exist" do
+      context "when the id doesn't exist" do
         let(:id) { Faker::Lorem.word }
 
         it "returns a 404" do
@@ -38,7 +40,7 @@ RSpec.describe LessonsController, type: :controller do
         end
       end
 
-      context "if the id exists" do
+      context "when the id exists" do
         it "returns a 200" do
           subject
           expect(response).to be_ok
@@ -59,12 +61,13 @@ RSpec.describe LessonsController, type: :controller do
 
   describe "#delete" do
     subject { delete(:destroy, params: { classroom_id: classroom.id, id: id }) }
+
     let!(:lesson) { create(:lesson, creator: creator, classroom: classroom) }
     let(:id) { lesson.id }
     let(:creator) { test_user }
 
     in_context :authenticated do
-      context "if the id doesn't exist" do
+      context "when the id doesn't exist" do
         let(:id) { Faker::Lorem.word }
 
         it "returns a 404" do
@@ -73,8 +76,8 @@ RSpec.describe LessonsController, type: :controller do
         end
       end
 
-      context "the id exists" do
-        context "the user is not the creator" do
+      context "when id exists" do
+        context "when user is not the creator" do
           let(:creator) { create(:user) }
 
           it "returns an unauthorized" do
@@ -82,7 +85,8 @@ RSpec.describe LessonsController, type: :controller do
             expect(response).to be_unauthorized
           end
         end
-        context "the user is the creator" do
+
+        context "when user is the creator" do
           it "returns a 204" do
             subject
             expect(response).to be_no_content
@@ -98,6 +102,7 @@ RSpec.describe LessonsController, type: :controller do
 
   describe "#create" do
     subject { post(:create, params: { classroom_id: classroom.id, lesson: params }) }
+
     let(:params) do
       {
         title: title,
@@ -108,7 +113,7 @@ RSpec.describe LessonsController, type: :controller do
     let(:description) { Faker::DrWho.quote.first(300) }
 
     in_context :authenticated do
-      context "the classroom is not his" do
+      context "when classroom is not his" do
         let(:classroom) { create(:classroom) }
 
         it 'returns a 401' do
@@ -136,7 +141,7 @@ RSpec.describe LessonsController, type: :controller do
         expect(json_response[:creator_id]).to eq(test_user.id)
       end
 
-      context "lesson is missing from params" do
+      context "without lesson in params" do
         subject { post(:create, params: { classroom_id: classroom.id }) }
 
         it "returns a 403" do
@@ -150,7 +155,7 @@ RSpec.describe LessonsController, type: :controller do
         end
       end
 
-      context "the classroom doesn't exist" do
+      context "when classroom doesn't exist" do
         subject { post(:create, params: { classroom_id: "1pl4y-pok3m0n-g0-3v3ryd4y", lesson: params }) }
 
         it "returns a 404" do
@@ -164,7 +169,7 @@ RSpec.describe LessonsController, type: :controller do
         end
       end
 
-      context "if title is missing" do
+      context "without title" do
         before do
           params.delete(:title)
         end
@@ -180,7 +185,7 @@ RSpec.describe LessonsController, type: :controller do
         end
       end
 
-      context "if title is too long" do
+      context "when title is too long" do
         let(:title) { Faker::Lorem.sentence(40).first(60) }
 
         it "returns a 403" do
@@ -194,7 +199,7 @@ RSpec.describe LessonsController, type: :controller do
         end
       end
 
-      context "if description is too long" do
+      context "when description is too long" do
         let(:description) { Faker::Lorem.sentence(400).first(400) }
 
         it "returns a 403" do
@@ -212,6 +217,7 @@ RSpec.describe LessonsController, type: :controller do
 
   describe "#update" do
     subject { patch(:update, params: { classroom_id: classroom.id, id: id, lesson: params }) }
+
     let(:params) do
       {
         title: title,
@@ -225,7 +231,7 @@ RSpec.describe LessonsController, type: :controller do
     let(:creator) { test_user }
 
     in_context :authenticated do
-      context "the user isn't the creator" do
+      context "when the user isn't the creator" do
         let(:creator) { create(:user) }
 
         it "returns unauthorized" do
@@ -251,7 +257,7 @@ RSpec.describe LessonsController, type: :controller do
         )
       end
 
-      context "if the id doesn't exist" do
+      context "when the id doesn't exist" do
         let(:id) { Faker::Lorem.word }
 
         it "returns a 404" do
@@ -260,7 +266,7 @@ RSpec.describe LessonsController, type: :controller do
         end
       end
 
-      context "lesson is missing from params" do
+      context "without lesson in params" do
         subject { patch(:update, params: { id: id, classroom_id: classroom.id }) }
 
         it "returns a 403" do
@@ -274,7 +280,7 @@ RSpec.describe LessonsController, type: :controller do
         end
       end
 
-      context "if title is too long" do
+      context "when title is too long" do
         let(:title) { Faker::Lorem.sentence(40).first(60) }
 
         it "returns a 403" do
@@ -288,7 +294,7 @@ RSpec.describe LessonsController, type: :controller do
         end
       end
 
-      context "if description is too long" do
+      context "when description is too long" do
         let(:description) { Faker::Lorem.sentence(400).first(400) }
 
         it "returns a 403" do

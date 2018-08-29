@@ -1,6 +1,8 @@
 inherit_from:
   - http://relaxed.ruby.style/rubocop.yml
 
+require: rubocop-rspec
+
 AllCops:
   DisplayStyleGuide: true
   DisplayCopNames: true
@@ -12,6 +14,35 @@ AllCops:
 
 Rails:
   Enabled: True
+
+# Unpractical and not DRY
+RSpec/NamedSubject:
+  Enabled: false
+
+# I don't want the extra burden of test instanciation
+# For testing things closely related
+RSpec/MultipleExpectations:
+  Enabled: false
+
+# Meh. Less readable.
+RSpec/VerifiedDoubles:
+  Enabled: false
+
+# Same.
+RSpec/MessageSpies:
+  Enabled: false
+
+# Not configurable (even truer with MultipleExpectations)
+RSpec/ExampleLength:
+  Enabled: false
+
+# Meh. Unpractical.
+RSpec/NestedGroups:
+  Enabled: false
+
+# Collide with rspec_in_context
+RSpec/EmptyExampleGroup:
+  Enabled: false
 
 Metrics/BlockLength:
   Exclude:

@@ -23,6 +23,9 @@ gem 'devise_token_auth', '~> 0.1', github: 'denispasin/devise_token_auth'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
+gem "interactor", "~> 3.0"
+gem 'interactor-contracts'
+gem 'kaminari'
 gem "pundit"
 gem "sidekiq"
 
@@ -52,6 +55,7 @@ group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'pry-rails'
   gem 'rubocop', require: false
+  gem 'rubocop-rspec', require: false
   gem 'solargraph', require: false
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'

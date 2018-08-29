@@ -2,7 +2,7 @@
 
 describe ClassroomsController do
   define_context "inexistant classroom" do
-    context "if the id doesn't exist" do
+    context "when the id doesn't exist" do
       let(:id) { Faker::Lorem.word }
 
       it "returns a 404" do
@@ -33,13 +33,14 @@ describe ClassroomsController do
 
   describe "#show" do
     subject { get(:show, params: { id: id }) }
+
     let(:classroom) { create(:classroom) }
     let(:id) { classroom.id }
 
     in_context :authenticated do
       in_context "inexistant classroom"
 
-      context "if the id exists" do
+      context "when the id exists" do
         it "returns a 200" do
           subject
           expect(response).to be_ok
@@ -54,8 +55,9 @@ describe ClassroomsController do
           expect(json_response["creator_id"]).to eq(classroom.creator_id)
         end
 
-        context "the classroom has lessons" do
+        context "when the classroom has lessons" do
           let(:classroom) { create(:classroom, :with_lessons) }
+
           it "returns the lesson ids" do
             subject
             expect(json_response["lessons"]).to eq(classroom.lessons.sort_by(&:created_at).map(&:id))
@@ -67,6 +69,7 @@ describe ClassroomsController do
 
   describe "#delete" do
     subject { delete(:destroy, params: { id: id }) }
+
     let!(:classroom) { create(:classroom, creator: creator) }
     let(:id) { classroom.id }
     let(:creator) { test_user }
@@ -74,8 +77,8 @@ describe ClassroomsController do
     in_context :authenticated do
       in_context "inexistant classroom"
 
-      context "the id exists" do
-        context "the user is not the creator" do
+      context "when the id exists" do
+        context "when the user is not the creator" do
           let(:creator) { create(:user) }
 
           it "returns an unauthorized" do
@@ -83,7 +86,8 @@ describe ClassroomsController do
             expect(response).to be_unauthorized
           end
         end
-        context "the user is the creator" do
+
+        context "when the user is the creator" do
           it "returns a 204" do
             subject
             expect(response).to be_no_content
@@ -99,6 +103,7 @@ describe ClassroomsController do
 
   describe "#create" do
     subject { post(:create, params: { classroom: params }) }
+
     let(:params) do
       {
         title: title,
@@ -128,7 +133,7 @@ describe ClassroomsController do
         expect(json_response[:creator_id]).to eq(test_user.id)
       end
 
-      context "classroom is missing from params" do
+      context "when classroom is missing from params" do
         subject { post(:create, params: {}) }
 
         it "returns a 403" do
@@ -142,7 +147,7 @@ describe ClassroomsController do
         end
       end
 
-      context "if title is missing" do
+      context "when title is missing" do
         before do
           params.delete(:title)
         end
@@ -158,7 +163,7 @@ describe ClassroomsController do
         end
       end
 
-      context "if title is too long" do
+      context "when title is too long" do
         let(:title) { Faker::Lorem.sentence(40).first(60) }
 
         it "returns a 403" do
@@ -172,7 +177,7 @@ describe ClassroomsController do
         end
       end
 
-      context "if description is too long" do
+      context "when description is too long" do
         let(:description) { Faker::Lorem.sentence(400).first(400) }
 
         it "returns a 403" do
@@ -190,6 +195,7 @@ describe ClassroomsController do
 
   describe "#update" do
     subject { patch(:update, params: { id: id, classroom: params }) }
+
     let(:params) do
       {
         title: title,
@@ -203,7 +209,7 @@ describe ClassroomsController do
     let(:creator) { test_user }
 
     in_context :authenticated do
-      context "the user isn't the creator" do
+      context "when the user isn't the creator" do
         let(:creator) { create(:user) }
 
         it "returns unauthorized" do
@@ -231,7 +237,7 @@ describe ClassroomsController do
 
       in_context "inexistant classroom"
 
-      context "classroom is missing from params" do
+      context "when classroom is missing from params" do
         subject { patch(:update, params: { id: id }) }
 
         it "returns a 403" do
@@ -245,7 +251,7 @@ describe ClassroomsController do
         end
       end
 
-      context "if title is too long" do
+      context "when title is too long" do
         let(:title) { Faker::Lorem.sentence(40).first(60) }
 
         it "returns a 403" do
@@ -259,7 +265,7 @@ describe ClassroomsController do
         end
       end
 
-      context "if description is too long" do
+      context "when description is too long" do
         let(:description) { Faker::Lorem.sentence(400).first(400) }
 
         it "returns a 403" do

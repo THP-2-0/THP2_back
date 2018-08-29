@@ -3,11 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe LessonPolicy do
+  subject { described_class }
+
   let(:user) { User.new }
   let(:created_lesson) { create(:lesson, creator: test_user) }
   let(:not_created_lesson) { create(:lesson) }
-
-  subject { described_class }
 
   permissions :update?, :create_invitation?, :destroy? do
     it "denies update on not created lessons" do
