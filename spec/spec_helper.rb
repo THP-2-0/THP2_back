@@ -4,6 +4,8 @@ if ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start 'rails' do
     add_group "Serializers", "app/serializers"
+    add_group "Policies", "app/policies"
+    add_group "Interactors", "app/interactors"
     add_filter do |source_file|
       source_file.lines.count < 7
     end

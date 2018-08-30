@@ -35,7 +35,7 @@ describe User do
 
   it "is creatable" do
     create(:user)
-    user = User.first
+    user = described_class.first
     expect(user.email).not_to be_blank
     expect(user.username).not_to be_blank
     expect(user.password).to be_blank
@@ -72,10 +72,10 @@ describe User do
   end
 
   it "doesn't need confirmation" do
-    expect(create(:user).confirmation_required?).to be_falsey
+    expect(create(:user)).not_to be_confirmation_required
   end
 
-  context "As devise_token_auth doesn't use serializers _sigh_" do
+  describe "As devise_token_auth doesn't use serializers _sigh_" do
     it "returns the right fields in a JSON" do
       user_json = JSON.parse(subject.to_json)
       expect(user_json['id']).to eq(subject.id)

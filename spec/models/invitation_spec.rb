@@ -17,7 +17,7 @@ RSpec.describe Invitation, type: :model do
   it "is creatable" do
     invitation = create(:invitation).reload
     expect(invitation.id).not_to be_nil
-    expect(invitation.accepted?).to be_falsy
+    expect(invitation).not_to be_accepted
   end
 
   it "follows student link" do

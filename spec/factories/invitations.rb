@@ -15,13 +15,13 @@
 
 FactoryBot.define do
   factory :invitation do
-    accepted false
+    accepted { false }
     student { create(:user) }
     teacher { create(:user) }
     lesson { create(:lesson) }
 
     trait(:accepted) do
-      accepted true
+      accepted { true }
     end
   end
 end
