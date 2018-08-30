@@ -16,6 +16,6 @@ class FetchLessons < ApplicationInteractor
       where(classroom: context.classroom).
       page(context.page_params[:number]).
       per(context.page_params[:size]).
-      order(:created_at)
+      order(created_at: :desc)
   end
 end

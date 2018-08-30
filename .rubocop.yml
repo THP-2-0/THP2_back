@@ -44,6 +44,10 @@ RSpec/NestedGroups:
 RSpec/EmptyExampleGroup:
   Enabled: false
 
+# Prevent proper overriding
+RSpec/LetSetup:
+  Enabled: false
+
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'

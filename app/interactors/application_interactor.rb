@@ -7,7 +7,7 @@ class ApplicationInteractor
       include Interactor::Contracts
 
       on_breach do |breaches|
-        context.fail!(breaches)
+        context.fail!(errors: breaches.flat_map(&:messages), breaches: breaches.flat_map(&:property))
       end
     end
   end
