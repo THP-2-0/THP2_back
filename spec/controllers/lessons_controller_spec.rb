@@ -5,44 +5,6 @@ require 'rails_helper'
 RSpec.describe LessonsController, type: :controller do
   let!(:classroom) { create(:classroom, creator: test_user) }
 
-  define_context "controller paginate" do
-    context "when pagination is neeeded" do
-      subject do
-        get :index, params: params.merge(page: { number: number, size: size })
-      end
-
-      let!(:lessons) { create_list(:lesson, 30, classroom: classroom) }
-      let(:number) { 1 }
-      let(:size) { 27 }
-
-      it "limits the number of elements" do
-        subject
-        expect(json_response[:lessons].size).to eq(size)
-      end
-
-      context "when changing page" do
-        let(:number) { 2 }
-
-        it "works" do
-          subject
-          expect(json_response[:lessons].size).to eq(3)
-        end
-      end
-
-      it "provides pagination informations" do
-        subject
-        meta = json_response[:meta]
-
-        expect(meta[:page_size]).to eq(27)
-        expect(meta[:current_page]).to eq(1)
-        expect(meta[:next_page]).to eq(2)
-        expect(meta[:prev_page]).to be_nil
-        expect(meta[:total_pages]).to eq(2)
-        expect(meta[:total_count]).to eq(30)
-      end
-    end
-  end
-
   describe "#index" do
     subject { get :index, params: params }
 
@@ -62,7 +24,9 @@ RSpec.describe LessonsController, type: :controller do
         expect(response).to be_ok
       end
 
-      in_context "controller paginate"
+      in_context "controller paginate", :lessons do
+        let!(:lessons) { create_list(:lesson, 30, classroom: classroom) }
+      end
     end
   end
 

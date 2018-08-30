@@ -13,7 +13,9 @@ describe ClassroomsController do
   end
 
   describe "#index" do
-    subject { get :index }
+    subject { get :index, params: params }
+
+    let(:params) { {} }
 
     in_context :authenticated do
       let!(:classrooms) { create_list(:classroom, 5) }
@@ -27,6 +29,10 @@ describe ClassroomsController do
       it "returns a 200" do
         subject
         expect(response).to be_ok
+      end
+
+      in_context "controller paginate", :classrooms do
+        let!(:classrooms) { create_list(:classroom, 30) }
       end
     end
   end

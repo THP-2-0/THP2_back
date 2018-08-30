@@ -12,20 +12,8 @@ describe FetchLessons do
   let!(:lessons) { create_list(:lesson, 5, classroom: lesson_classroom) }
 
   context "with missing params" do
-    define_context "empty fetch params" do |param_name|
-      context "with empty #{param_name}" do
-        let(param_name.to_sym) { nil }
-
-        it "raises an Interactor exception" do
-          expect(subject).to be_failure
-          expect(subject.errors).not_to be_empty
-          expect(subject.breaches).to eq([param_name.to_sym])
-        end
-      end
-    end
-
-    in_context "empty fetch params", :classroom
-    in_context "empty fetch params", :page_params
+    in_context "pagination empty fetch params", :classroom
+    in_context "pagination empty fetch params", :page_params
   end
 
   it "returns all the lessons" do
