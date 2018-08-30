@@ -31,7 +31,9 @@ describe InvitationsController do
   let(:student) { create(:user) }
 
   describe '#index' do
-    subject { get :index, params: { classroom_id: classroom.id, lesson_id: lesson.id } }
+    subject { get :index, params: params }
+
+    let(:params) { { classroom_id: classroom.id, lesson_id: lesson.id } }
 
     in_context(:authenticated) do
       let!(:invitations) { create_list(:invitation, 5, lesson: lesson) }
@@ -48,6 +50,10 @@ describe InvitationsController do
       it 'returns a 200' do
         subject
         expect(response).to be_ok
+      end
+
+      in_context "controller paginate", :invitations do
+        let!(:invitations) { create_list(:invitation, 30, lesson: lesson) }
       end
     end
   end

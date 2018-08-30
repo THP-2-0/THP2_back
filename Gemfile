@@ -25,6 +25,7 @@ gem 'devise_token_auth', '~> 0.1', github: 'denispasin/devise_token_auth'
 
 gem "interactor", "~> 3.0"
 gem 'interactor-contracts'
+gem "interactor-rails"
 gem 'kaminari'
 gem "pundit"
 gem "sidekiq"

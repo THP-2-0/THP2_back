@@ -4,7 +4,8 @@ class InvitationsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    render json: Invitation.where(lesson: current_lesson).order(:created_at)
+    invitations = FetchInvitations.call!(page_params: page_params, lesson: current_lesson).invitations
+    render json: invitations, meta: pagination_dict(invitations)
   end
 
   def show

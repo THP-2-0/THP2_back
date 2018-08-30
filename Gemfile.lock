@@ -152,6 +152,9 @@ GEM
     interactor-contracts (0.1.0)
       dry-validation (~> 0.10)
       interactor (~> 3)
+    interactor-rails (2.2.0)
+      interactor (~> 3.0)
+      rails (>= 4.2, < 5.3)
     jaro_winkler (1.5.1)
     json (2.1.0)
     jsonapi-renderer (0.2.0)
@@ -375,6 +378,7 @@ DEPENDENCIES
   guard-rubocop
   interactor (~> 3.0)
   interactor-contracts
+  interactor-rails
   kaminari
   listen (>= 3.0.5, < 3.2)
   lograge
