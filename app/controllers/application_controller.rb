@@ -10,6 +10,7 @@ class ApplicationController < ActionController::API
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
   rescue_from ActiveRecord::RecordInvalid, with: :rescue_bad_params
   rescue_from Pundit::NotAuthorizedError, with: :render_unauthorized
+  rescue_from Interactor::Failure, with: :rescue_interactor_failure
 
   def record_not_found(exception)
     render json: { errors: [exception.message] }, status: :not_found
@@ -21,6 +22,10 @@ class ApplicationController < ActionController::API
 
   def rescue_bad_params(exception)
     render json: { errors: exception.record.errors.full_messages }, status: :forbidden
+  end
+
+  def rescue_interactor_failure(exception)
+    render json: { errors: exception.context.errors }, status: :forbidden
   end
 
   def render_unauthorized

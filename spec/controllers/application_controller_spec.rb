@@ -1,6 +1,27 @@
 # frozen_string_literal: true
 
 describe ApplicationController do
+  controller do
+    def interactor_failure
+      raise Interactor::Failure, Interactor::Context.new(errors: [:errors])
+    end
+  end
+
+  describe "interactor_failure" do
+    before do
+      routes.draw { get "interactor_failure" => "anonymous#interactor_failure" }
+      get :interactor_failure
+    end
+
+    it "returns forbidden" do
+      expect(response).to be_forbidden
+    end
+
+    it "returns errors" do
+      expect(json_response[:errors]).to eq(['errors'])
+    end
+  end
+
   describe "devise permitted params" do
     it "includes username and email" do
       subj = described_class.new
