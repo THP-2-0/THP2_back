@@ -41,8 +41,8 @@ describe InvitationsController do
 
       it 'returns all the invitations' do
         subject
-        expect(json_response.size).to eq(5)
-        expect(json_response.first[:id]).to be_in(invitations.map(&:id))
+        expect(json_response[:invitations].size).to eq(5)
+        expect(json_response[:invitations].first[:id]).to be_in(invitations.map(&:id))
       end
 
       it 'returns a 200' do
@@ -67,7 +67,7 @@ describe InvitationsController do
       it 'returns the right fields' do
         subject
         %i[id accepted student_id teacher_id].each do |field|
-          expect(json_response[field]).to eq(invitation.public_send(field))
+          expect(json_response[:invitation][field]).to eq(invitation.public_send(field))
         end
       end
 
@@ -100,7 +100,7 @@ describe InvitationsController do
 
         it "returns the newly created invitation" do
           subject
-          expect(json_response[:student_id]).to eq(student.id)
+          expect(json_response[:invitation][:student_id]).to eq(student.id)
         end
         it "creates the invitation" do
           expect{ subject }.to change(Invitation, :count).by(1)

@@ -20,8 +20,8 @@ describe ClassroomsController do
 
       it "returns all the classrooms" do
         subject
-        expect(json_response.size).to eq(5)
-        expect(json_response.first[:id]).to be_in(classrooms.map(&:id))
+        expect(json_response[:classrooms].size).to eq(5)
+        expect(json_response[:classrooms].first[:id]).to be_in(classrooms.map(&:id))
       end
 
       it "returns a 200" do
@@ -48,11 +48,11 @@ describe ClassroomsController do
 
         it "returns the classroom" do
           subject
-          expect(json_response[:id]).to eq(classroom.id)
-          expect(json_response[:title]).to eq(classroom.title)
-          expect(json_response[:description]).to eq(classroom.description)
-          expect(json_response["created_at"]).to eq(classroom.created_at.as_json)
-          expect(json_response["creator_id"]).to eq(classroom.creator_id)
+          expect(json_response[:classroom][:id]).to eq(classroom.id)
+          expect(json_response[:classroom][:title]).to eq(classroom.title)
+          expect(json_response[:classroom][:description]).to eq(classroom.description)
+          expect(json_response[:classroom]["created_at"]).to eq(classroom.created_at.as_json)
+          expect(json_response[:classroom]["creator_id"]).to eq(classroom.creator_id)
         end
 
         context "when the classroom has lessons" do
@@ -60,7 +60,7 @@ describe ClassroomsController do
 
           it "returns the lesson ids" do
             subject
-            expect(json_response["lessons"]).to eq(classroom.lessons.sort_by(&:created_at).map(&:id))
+            expect(json_response[:classroom]["lessons"]).to eq(classroom.lessons.sort_by(&:created_at).map(&:id))
           end
         end
       end
@@ -121,7 +121,7 @@ describe ClassroomsController do
 
       it "returns the new classroom" do
         subject
-        expect(json_response[:id]).not_to be_blank
+        expect(json_response[:classroom][:id]).not_to be_blank
       end
 
       it "creates the classroom" do
@@ -130,7 +130,7 @@ describe ClassroomsController do
 
       it "sets the creator to current_user" do
         subject
-        expect(json_response[:creator_id]).to eq(test_user.id)
+        expect(json_response[:classroom][:creator_id]).to eq(test_user.id)
       end
 
       context "when classroom is missing from params" do
@@ -225,8 +225,8 @@ describe ClassroomsController do
 
       it "returns the updated classroom" do
         subject
-        expect(json_response[:title]).to eq title
-        expect(json_response[:description]).to eq description
+        expect(json_response[:classroom][:title]).to eq title
+        expect(json_response[:classroom][:description]).to eq description
       end
 
       it "updates the classroom" do

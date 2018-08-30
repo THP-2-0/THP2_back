@@ -5,22 +5,64 @@ require 'rails_helper'
 RSpec.describe LessonsController, type: :controller do
   let!(:classroom) { create(:classroom, creator: test_user) }
 
+  define_context "controller paginate" do
+    context "when pagination is neeeded" do
+      subject do
+        get :index, params: params.merge(page: { number: number, size: size })
+      end
+
+      let!(:lessons) { create_list(:lesson, 30, classroom: classroom) }
+      let(:number) { 1 }
+      let(:size) { 27 }
+
+      it "limits the number of elements" do
+        subject
+        expect(json_response[:lessons].size).to eq(size)
+      end
+
+      context "when changing page" do
+        let(:number) { 2 }
+
+        it "works" do
+          subject
+          expect(json_response[:lessons].size).to eq(3)
+        end
+      end
+
+      it "provides pagination informations" do
+        subject
+        meta = json_response[:meta]
+
+        expect(meta[:page_size]).to eq(27)
+        expect(meta[:current_page]).to eq(1)
+        expect(meta[:next_page]).to eq(2)
+        expect(meta[:prev_page]).to be_nil
+        expect(meta[:total_pages]).to eq(2)
+        expect(meta[:total_count]).to eq(30)
+      end
+    end
+  end
+
   describe "#index" do
-    subject { get :index, params: { classroom_id: classroom.id } }
+    subject { get :index, params: params }
+
+    let(:params) { { classroom_id: classroom.id } }
 
     in_context :authenticated do
       let!(:lessons) { create_list(:lesson, 5, classroom: classroom) }
 
       it "returns all the lessons" do
         subject
-        expect(json_response.size).to eq(5)
-        expect(json_response.first[:id]).to be_in(lessons.map(&:id))
+        expect(json_response[:lessons].size).to eq(5)
+        expect(json_response[:lessons].first[:id]).to be_in(lessons.map(&:id))
       end
 
       it "returns a 200" do
         subject
         expect(response).to be_ok
       end
+
+      in_context "controller paginate"
     end
   end
 
@@ -48,12 +90,12 @@ RSpec.describe LessonsController, type: :controller do
 
         it "returns the lesson" do
           subject
-          expect(json_response[:id]).to eq(lesson.id)
-          expect(json_response[:title]).to eq(lesson.title)
-          expect(json_response[:description]).to eq(lesson.description)
-          expect(json_response["created_at"]).to eq(lesson.created_at.as_json)
-          expect(json_response["creator_id"]).to eq(lesson.creator_id)
-          expect(json_response["classroom_id"]).to eq(lesson.classroom_id)
+          expect(json_response[:lesson][:id]).to eq(lesson.id)
+          expect(json_response[:lesson][:title]).to eq(lesson.title)
+          expect(json_response[:lesson][:description]).to eq(lesson.description)
+          expect(json_response[:lesson]["created_at"]).to eq(lesson.created_at.as_json)
+          expect(json_response[:lesson]["creator_id"]).to eq(lesson.creator_id)
+          expect(json_response[:lesson]["classroom_id"]).to eq(lesson.classroom_id)
         end
       end
     end
@@ -129,7 +171,7 @@ RSpec.describe LessonsController, type: :controller do
 
       it "returns the new lesson" do
         subject
-        expect(json_response[:id]).not_to be_blank
+        expect(json_response[:lesson][:id]).not_to be_blank
       end
 
       it "creates the lesson" do
@@ -138,7 +180,7 @@ RSpec.describe LessonsController, type: :controller do
 
       it "sets the creator to current_user" do
         subject
-        expect(json_response[:creator_id]).to eq(test_user.id)
+        expect(json_response[:lesson][:creator_id]).to eq(test_user.id)
       end
 
       context "without lesson in params" do
@@ -247,8 +289,8 @@ RSpec.describe LessonsController, type: :controller do
 
       it "returns the updated lesson" do
         subject
-        expect(json_response[:title]).to eq title
-        expect(json_response[:description]).to eq description
+        expect(json_response[:lesson][:title]).to eq title
+        expect(json_response[:lesson][:description]).to eq description
       end
 
       it "updates the lesson" do

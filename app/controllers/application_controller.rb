@@ -60,6 +60,7 @@ class ApplicationController < ActionController::API
       begin
         new_page_params = params.reverse_merge(page: {})[:page].permit(:number, :size)
         new_page_params[:size] ||= 25
+        new_page_params[:size] = new_page_params[:size].to_i
         new_page_params[:size] = 25 if new_page_params[:size] > 100
         new_page_params
       end
