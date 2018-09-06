@@ -65,6 +65,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include DeviseHelper
   config.include RspecInContext
+  config.after { Faker::UniqueGenerator.clear }
 end
 
 ActiveJob::Base.queue_adapter = :test
