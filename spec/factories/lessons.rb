@@ -18,7 +18,7 @@ FactoryBot.define do
     creator { create(:user) }
     classroom { create(:classroom) }
 
-    title { Faker::Lovecraft.tome.first(50) }
+    title { Faker::FamousLastWords.unique.last_words.first(50) }
     description { Faker::Matz.quote.first(300) }
     trait(:with_invitations) do
       after(:create) do |lesson|

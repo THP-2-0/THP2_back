@@ -8,7 +8,8 @@ RSpec.describe LessonsController, type: :controller do
   describe "#index" do
     subject { get :index, params: params }
 
-    let(:params) { { classroom_id: classroom.id } }
+    let(:filtering_params) { {} }
+    let(:params) { { classroom_id: classroom.id, filter: filtering_params } }
 
     in_context :authenticated do
       let!(:lessons) { create_list(:lesson, 5, classroom: classroom) }
@@ -26,6 +27,15 @@ RSpec.describe LessonsController, type: :controller do
 
       in_context "controller paginate", :lessons do
         let!(:lessons) { create_list(:lesson, 30, classroom: classroom) }
+      end
+
+      context "when with a filter" do
+        let(:filtering_params) { { title: lessons.first.title } }
+
+        it "filters" do
+          subject
+          expect(json_response[:lessons].size).to eq(1)
+        end
       end
     end
   end

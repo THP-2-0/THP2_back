@@ -70,4 +70,52 @@ describe ApplicationController do
       end
     end
   end
+
+  describe "filtering_params" do
+    subject { controller.send(:filtering_params, filters) }
+
+    let(:filters) { [:title] }
+
+    before do
+      controller.params = ActionController::Parameters.new(filter: { title: "title" })
+    end
+
+    it "parses the filters" do
+      expect(subject.to_h).to eq("title" => "title")
+    end
+
+    context "with unknown filters" do
+      before do
+        controller.params = ActionController::Parameters.new(filter: { title: "title", not_a_valid_filter: "nope" })
+      end
+
+      it "removes them" do
+        expect(subject.to_h).to eq("title" => "title")
+      end
+    end
+
+    describe "types" do
+      before do
+        controller.params = ActionController::Parameters.new(filter: { "true" => "true", "false" => "false", integer: "12", float: "12.3" })
+      end
+
+      let(:filters) { ["true", "false", :integer, :float] }
+
+      it "parses true" do
+        expect(subject["true"]).to eq(true)
+      end
+
+      it "parses false" do
+        expect(subject["false"]).to eq(false)
+      end
+
+      it "parses integer" do
+        expect(subject["integer"]).to eq(12)
+      end
+
+      it "parses float" do
+        expect(subject["float"]).to eq(12.3)
+      end
+    end
+  end
 end

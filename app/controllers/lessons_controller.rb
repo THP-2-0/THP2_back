@@ -4,7 +4,11 @@ class LessonsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    lessons = FetchLessons.call!(classroom: current_classroom, page_params: page_params).lessons
+    lessons = FetchLessons.call!(
+      classroom: current_classroom,
+      page_params: page_params,
+      filters: filtering_params(:title)
+    ).lessons
     render json: lessons, meta: pagination_dict(lessons)
   end
 

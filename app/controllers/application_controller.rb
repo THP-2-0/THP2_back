@@ -55,6 +55,22 @@ class ApplicationController < ActionController::API
     }
   end
 
+  def filtering_params(filters)
+    @filtering_params ||=
+      begin
+        filter_params = params.reverse_merge(filter: {})[:filter].permit(filters)
+        filter_params.each do |k, v|
+          case v
+          when "true" then filter_params[k] = true
+          when "false" then filter_params[k] = false
+          when /^[0-9]+$/ then filter_params[k] = v.to_i
+          when /^[0-9.]+$/ then filter_params[k] = v.to_f
+          end
+        end
+        filter_params.to_h
+      end
+  end
+
   def page_params
     @page_params ||=
       begin
