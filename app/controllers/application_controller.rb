@@ -67,7 +67,7 @@ class ApplicationController < ActionController::API
           when /^[0-9.]+$/ then filter_params[k] = v.to_f
           end
         end
-        filter_params
+        filter_params.to_h
       end
   end
 
