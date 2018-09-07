@@ -41,5 +41,22 @@ module THP2Back
     config.active_job.queue_adapter = :sidekiq
     # TODO TEST ME
     # config.active_job.queue_name_prefix = "THP2_back_#{Rails.env}"
+    ALLOWED_ORIGINS = [
+      'http://localhost:8000',
+      'http://0.0.0.0:8000',
+      'http://127.0.0.1:8000',
+      'http://localhost:8001',
+      'http://0.0.0.0:8001',
+      'http://127.0.0.1:8001',
+      %r{\Ahttps://\S*\.thp2\.com\z},
+      %r{\Ahttps://thp2-?\S*\.herokuapp\.com\z}
+    ].freeze
+
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins ALLOWED_ORIGINS
+        resource '*', headers: :any, methods: :any, expose: ['uid', 'access-token', 'expiry', 'client']
+      end
+    end
   end
 end

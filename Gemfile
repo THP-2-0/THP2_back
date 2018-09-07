@@ -21,7 +21,7 @@ gem 'active_model_serializers', '~> 0.10.0'
 # Auth with tokens for an API
 gem 'devise_token_auth', '~> 0.1', github: 'denispasin/devise_token_auth'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem 'rack-cors'
+gem 'rack-cors'
 
 gem "interactor", "~> 3.0"
 gem 'interactor-contracts'
